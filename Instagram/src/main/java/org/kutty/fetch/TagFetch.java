@@ -23,10 +23,11 @@ import dbo.Tag;
 /** 
  * Fetches the data from Instagram corresponding to a particular tag
  * Parses the json response and then further analyzes it 
- * TODO - Add multi-threading
+ * 
  * @author Rupak
  * @for Kutty 
  * @since 11 July, 2015 
+ *  
  */ 
 
 public class TagFetch extends Thread{
@@ -37,13 +38,13 @@ public class TagFetch extends Thread{
 	public String suffix_url = "/media/recent?access_token=";
 
 	/** 
-	 * public constructor to initialize the access-token
-	 * @param access_token String containing the access-token
+	 * public constructor to initialize the tag name
+	 * @param access_token String containing the tag name
 	 */ 
 
-	public TagFetch(String access_token) {  
+	public TagFetch(String tag_name) {  
 
-		this.access_token = access_token;
+		this.tag = tag_name;
 	} 
 
 	/** 
@@ -205,13 +206,13 @@ public class TagFetch extends Thread{
 
 		return tag_set;
 	}
-	
+
 	/** 
 	 * Returns the set of tags in a given tag 
 	 * @param data_object JSONObject containing a Instagram tag
 	 * @return Set<String> containing unique tags in a given post
 	 */ 
-	
+
 	public Set<String> getTagSet(JSONObject data_object) {
 
 		Set<String> tag_set = new HashSet<String>();
@@ -297,7 +298,7 @@ public class TagFetch extends Thread{
 		String next_url = getNextURL(response);
 		int page_count = 1; 
 		UserFetch userfetch = new UserFetch();
-		
+
 		while(!next_url.isEmpty()) { 
 
 			JSONArray data_array = getParsedDataArray(response,"data");
@@ -312,59 +313,59 @@ public class TagFetch extends Thread{
 			System.out.println("Page Count : " + page_count++);
 			System.out.println("Next URL : " + next_url);
 			System.out.println();  
-			
+
 			long comment_count = 0;
 			long like_count = 0; 
-			
+
 			JSONObject data_object;
 			JSONObject comment_object;
 			JSONObject like_object;
 			JSONArray comment_data_array;
 			JSONArray like_data_array;
-			
+
 			Tag tag; 
 			InstaComment comment; 
 			InstaLike like; 
-			
+
 			for (int i = 0; i < data_array.size(); i++) { 
 
 				data_object = (JSONObject) data_array.get(i);
 				tag = getInstagramTagObject(data_object);
-				
+
 				comment_object = (JSONObject) data_object.get("comments");
 				comment_count = (Long) comment_object.get("count"); 
 				like_object = (JSONObject) data_object.get("likes"); 
 				like_count = (Long) like_object.get("count"); 
-				
+
 				if (comment_count > 0) { 
-					
+
 					comment_data_array = (JSONArray) comment_object.get("data");
-					
+
 					for (int j = 0; j < comment_data_array.size(); j++) { 
-						
+
 						comment = getInstagramCommentObject((JSONObject) comment_data_array.get(j));
 						comment.setTagId(tag.getTagId());
 						comment.setUsernameTag(tag.getAuthor()); 
-						
+
 						insertInstagramCommentObjectInDB(comment,tag_name);
 					}
 				}
-				
+
 				if (like_count > 0) { 
-					
+
 					like_data_array = (JSONArray) like_object.get("data"); 
-					
+
 					for (int k = 0; k < like_data_array.size(); k++) { 
-						
+
 						like = getInstagramLikeObject((JSONObject) like_data_array.get(k));
 						like.setTagId(tag.getTagId());
 						like.setUserTag(tag.getAuthor());
 						like.setTimestamp(tag.getTimestamp());
-						
+
 						insertInstagramLikeObjectInDB(like,tag_name);
 					} 
 				}
-				
+
 				userfetch.fetchAndStore(tag.getUserId());
 				insertInstagramTagObjectInDB(tag,tag_name);
 			} 
@@ -375,13 +376,13 @@ public class TagFetch extends Thread{
 			}
 		}
 	} 
-	
+
 	/** 
 	 * Converts a given JSON post object into a Instagram Tag object
 	 * @param data_object JSONObject which is to be inserted into the database
 	 * @return Tag object containing the necessary fields of a Instagram post
 	 */ 
-	
+
 	public Tag getInstagramTagObject(JSONObject data_object) { 
 
 		Tag tag = new Tag(); 
@@ -416,7 +417,7 @@ public class TagFetch extends Thread{
 		JSONObject user;
 		JSONObject images; 
 		JSONObject standard_resolution; 
-		
+
 		created_time = Double.valueOf((String) data_object.get("created_time"));
 		tag_id = (String) data_object.get("id");
 		filter = (String) data_object.get("filter");
@@ -428,9 +429,9 @@ public class TagFetch extends Thread{
 		if (temp_location != null) {
 
 			location = (JSONObject) temp_location; 
-			
+
 			if (location.get("latitude") != null && location.get("longitude") != null) { 
-				
+
 				latitude = (Double) (location.get("latitude"));
 				longitude = (Double) (location.get("longitude"));
 			}
@@ -468,13 +469,13 @@ public class TagFetch extends Thread{
 		full_name = (String) user.get("full_name");
 		profile_picture = (String) user.get("profile_picture");
 		user_id = (String) user.get("id");
-		
+
 		images = (JSONObject) data_object.get("images");
 		standard_resolution = (JSONObject) images.get("standard_resolution");
 		image_url = (String) standard_resolution.get("url");
 		image_width = (int) (long) standard_resolution.get("width");
 		image_height = (int) (long) standard_resolution.get("height");
-		
+
 		tag.setUsername(username);
 		tag.setProfilePicture(profile_picture);
 		tag.setAuthor(full_name);
@@ -493,72 +494,72 @@ public class TagFetch extends Thread{
 		tag.setImageURL(image_url);
 		tag.setImageHeight(image_height);
 		tag.setImageWidth(image_width); 
-		
+
 		return tag;
 	} 
-	
+
 	/** 
 	 * Converts a JSONObject into a Instagram Comment object for easy insertion in the data set
 	 * @param data_object JSONObject which is to be converted into the Instagram Comment object
 	 * @return InstaComment object containing the necessary details of a Instagram Comment
 	 */ 
-	
+
 	public InstaComment getInstagramCommentObject(JSONObject data_object) { 
-		
+
 		InstaComment comment_object = new InstaComment(); 
 		String text;
 		String author;
 		double created_time;
 		String comment_id;
 		JSONObject from; 
-		
+
 		created_time = Double.valueOf((String) data_object.get("created_time"));
 		text = (String) data_object.get("text");
 		comment_id = (String) data_object.get("id");
-		
+
 		from = (JSONObject) data_object.get("from");
 		author = (String) from.get("full_name");  
-		
+
 		comment_object.setAuthor(author);
 		comment_object.setCommentId(comment_id);
 		comment_object.setText(text);
 		comment_object.setTimestamp(created_time);
-		
+
 		return comment_object;
 	} 
-	
+
 	/** 
 	 * Converts a given JSON response object into an Instagram Like object for easy insertion in the database
 	 * @param like_object JSONObject which is to be converted
 	 * @return InstaLike object containing the necessary fields
 	 */ 
-	
+
 	public InstaLike getInstagramLikeObject(JSONObject like_object) { 
-		
+
 		InstaLike like = new InstaLike();
-		
+
 		String full_name = "";
 		String username = "";
 		String like_id;
-		
+
 		full_name = (String) like_object.get("full_name");
 		username = (String) like_object.get("username");
 		like_id = (String) like_object.get("id");
-		
+
 		like.setAuthor(full_name);
 		like.setUsernameLike(username);
 		like.setLikeId(like_id);
-		
+
 		return like;
 	} 
-	
+
 	/** 
 	 * Inserts a given Instagram Tag object in the database
 	 * @param tag Instagram tag object which is to be inserted in the database
 	 * @param query_tag  String containing the query_tag which was used to search the object
 	 * @throws UnknownHostException
 	 */ 
-	
+
 	public void insertInstagramTagObjectInDB(Tag tag,String query_tag) throws UnknownHostException { 
 
 		MongoBase mongo = new MongoBase(); 
@@ -566,37 +567,37 @@ public class TagFetch extends Thread{
 		mongo.putInDB(tag, query_tag);
 		mongo.closeConnection();
 	}
-	
+
 	/** 
 	 * Inserts a given Instagram Comment Object in the database
 	 * @param comment Instagram Comment Object which is to be inserted
 	 * @param query_tag String containing the query tag which was used to search the object
 	 * @throws UnknownHostException
 	 */ 
-	
+
 	public void insertInstagramCommentObjectInDB(InstaComment comment,String query_tag) throws UnknownHostException { 
-		
+
 		MongoBase mongo = new MongoBase();
 		mongo.setCollection("Fashion");
 		mongo.putInDB(comment, query_tag);
 		mongo.closeConnection();
 	}
-	
+
 	/** 
 	 * Inserts a given Instagram Like object in the database
 	 * @param like Instagram Like object which is to be inserted
 	 * @param query_tag String containing the query tag which was used to search for the given like object
 	 * @throws UnknownHostException
 	 */ 
-	
+
 	public void insertInstagramLikeObjectInDB(InstaLike like,String query_tag) throws UnknownHostException { 
-		
+
 		MongoBase mongo = new MongoBase();
 		mongo.setCollection("Fashion");
 		mongo.putInDB(like, query_tag);
 		mongo.closeConnection();
 	} 
-	
+
 	/** 
 	 * Defines the tag retrieval pipeline for a given search query
 	 * @param query String containing the search query
@@ -614,25 +615,23 @@ public class TagFetch extends Thread{
 			TagPipeline(s);
 		}
 	} 
-	
+
 	/** 
-	 * 
+	 * Overloaded run function of the thread class to support multithreading
 	 */ 
-	
+
 	public void run() { 
-		
-		TagFetch tag = new TagFetch(); 
-		
+
 		try { 
-			
-			tag.TagPipeline("zara"); 
-			
+
+			TagPipeline(this.tag); 
+
 		} catch (IOException | ParseException e) {
 
 			e.printStackTrace();
 		}
 	}
-	
+
 	/** 
 	 * Main function to test the functionality of the class
 	 * @param args 
@@ -642,7 +641,7 @@ public class TagFetch extends Thread{
 
 	public static void main(String args[]) throws IOException, ParseException { 
 
-		TagFetch tags = new TagFetch();
-		tags.TagPipelineForTopTags("fashion");
+		TagFetch tags = new TagFetch("zara");
+		tags.start();
 	}
 }

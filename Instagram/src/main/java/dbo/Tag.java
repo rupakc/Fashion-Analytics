@@ -33,7 +33,7 @@ public class Tag {
 	private int image_width;
 	
 	/** 
-	 * 
+	 * public constructor to initialize the fields with default values
 	 */ 
 	
 	public Tag() { 
@@ -59,8 +59,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the image url of a given post
+	 * @return String containing the image url
 	 */ 
 	
 	public String getImageURL() { 
@@ -69,8 +69,8 @@ public class Tag {
 	}
 	
 	/** 
-	 * 
-	 * @param image_url
+	 * Sets the image url of a given post
+	 * @param image_url String containing the image url
 	 */ 
 	
 	public void setImageURL(String image_url) { 
@@ -79,8 +79,8 @@ public class Tag {
 	}
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the height of the image (only standard resolution)
+	 * @return Integer containing the height in pixels
 	 */ 
 	
 	public int getImageHeight() { 
@@ -89,8 +89,8 @@ public class Tag {
 	}
 	
 	/** 
-	 * 
-	 * @param image_height
+	 * Sets the height of a given image
+	 * @param image_height Integer containing the height of the image in pixels
 	 */ 
 	
 	public void setImageHeight(int image_height) { 
@@ -99,8 +99,8 @@ public class Tag {
 	}
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the width of the image (in standard resolution)
+	 * @return Integer containing the width in pixels
 	 */ 
 	
 	public int getImageWidth() { 
@@ -109,8 +109,8 @@ public class Tag {
 	}
 	
 	/** 
-	 * 
-	 * @param image_width
+	 * Sets the width of the given image
+	 * @param image_width Integer containing the image width
 	 */ 
 	
 	public void setImageWidth(int image_width) { 
@@ -369,8 +369,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param latitude
+	 * Sets the latitude of a given place
+	 * @param latitude Double containing the latitude
 	 */ 
 	
 	public void setLatitude(double latitude) { 
@@ -379,8 +379,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the longitude of a given place
+	 * @return Double representing the longitude of a place
 	 */ 
 	
 	public double getLongitude() { 
@@ -389,8 +389,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param longitude
+	 * Sets the longitude of a given post
+	 * @param longitude Floating point number containing longitude of a place
 	 */ 
 	
 	public void setLongitude(double longitude) { 
@@ -399,8 +399,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the count of comments on a given post
+	 * @return Integer containing the number of comments
 	 */ 
 	
 	public int getCommentCount() { 
@@ -410,8 +410,8 @@ public class Tag {
 	
 	
 	/** 
-	 * 
-	 * @param comment_count
+	 * Sets the number of comments received on a given post
+	 * @param comment_count Integer containing the number of comments
 	 */ 
 	
 	public void setCommentCount(int comment_count) { 
