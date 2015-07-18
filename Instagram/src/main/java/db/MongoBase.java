@@ -7,6 +7,7 @@ import java.util.Set;
 import twitter4j.GeoLocation;
 import twitter4j.QueryResult;
 import twitter4j.Status;
+import dbo.Comment;
 
 import com.github.jreddit.entity.Submission;
 import com.mongodb.BasicDBObject;
@@ -630,7 +631,69 @@ public class MongoBase {
 			collection.update(query, update);
 		}
 	} 
-	
+		
+	/** 
+	 * Adpator function to convert the youtube comment object into a DBObject for serialization and insertion in MongoDB
+	 * @param comment Youtube comment object which is to be inserted in the DB
+	 * @return DBObject corresponding to the youtube comment object
+	 */ 
+
+	public DBObject getCommentAdaptor(Comment comment) { 
+
+		DBObject comment_doc = new BasicDBObject("ReplyCount",comment.getReplyCount()).
+				append("ChannelId", comment.getChannelId()).
+				append("VideoId", comment.getVideoId()).
+				append("CommentId", comment.getCommentId()).
+				append("Message", comment.getMessage()).
+				append("Author", comment.getAuthor()).
+				append("TimeStamp", comment.getTimeStamp()).
+				append("UpdatedAt", comment.getUpdatedAt()).
+				append("LikeCount", comment.getLikeCount()).
+				append("ViewerRating",comment.getViewerRating()).
+				append("Channel", "Youtube");
+
+		return comment_doc;
+	}
+
+	/** 
+	 * Inserts a youtube comment object into the db if it doesnot already exists
+	 * @param comment Youtube comment object which is to be inserted
+	 */ 
+
+	public void putInDB(Comment comment) { 
+
+		if (!checkExists(comment)) { 
+
+			DBObject comment_doc = getCommentAdaptor(comment);
+			insertDocument((BasicDBObject) comment_doc);
+		}
+	}
+
+	/** 
+	 * Checks if a youtube comment object already exists in the database or not
+	 * @param comment Youtube comment object which is to be checked
+	 * @return true if the comment object exists false otherwise
+	 */ 
+
+	public boolean checkExists(Comment comment) { 
+
+		DBCursor cursor;
+		DBObject query;
+
+		query = new BasicDBObject("Channel","Youtube").
+				append("CommentId", comment.getCommentId()).
+				append("TimeStamp", comment.getTimeStamp());
+
+		cursor = collection.find(query);
+
+		if (cursor.hasNext()) { 
+
+			return true;
+		}
+
+		return false;
+	}
+
 	/** 
 	 * closes an open connection to the mongodb server
 	 */ 
