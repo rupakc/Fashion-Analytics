@@ -119,8 +119,8 @@ public class Tag {
 	}
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the username of a given Instagram Tag
+	 * @return String containing the username
 	 */ 
 	
 	public String getUsername() { 
@@ -129,8 +129,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param username
+	 * Sets the username of a given Instagram Tag
+	 * @param username String containing the username of the tag/post
 	 */ 
 	
 	public void setUsername(String username) { 
@@ -139,8 +139,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the link to the profile picture of the post author
+	 * @return String containing the link to the profile picture
 	 */ 
 	
 	public String getProfilePicture() { 
@@ -149,8 +149,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param profile_picture
+	 * Sets the profile picture url of the given user
+	 * @param profile_picture String containing the url to the profile picture
 	 */ 
 	
 	public void setProfilePicture(String profile_picture) { 
@@ -159,8 +159,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the author of a given Instagram tag post
+	 * @return String containing the author name
 	 */ 
 	
 	public String getAuthor() { 
@@ -169,8 +169,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param full_name
+	 * Sets the author of a given Instagram post
+	 * @param full_name String containing the full name of the author
 	 */ 
 	
 	public void setAuthor(String full_name) { 
@@ -179,8 +179,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the userId of the given author
+	 * @return String containing the userId
 	 */ 
 	
 	public String getUserId() { 
@@ -189,8 +189,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param user_id
+	 * Sets the userId of the given author
+	 * @param user_id String containing the userId
 	 */ 
 	
 	public void setUserId(String user_id) { 
