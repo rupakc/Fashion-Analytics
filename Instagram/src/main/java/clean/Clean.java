@@ -5,8 +5,8 @@ import java.util.StringTokenizer;
 
 /** 
  * @author Rupak Chakraborty
- * @for Adobe Systems,India
- * @since 25 Feb, 2015 
+ * @for Kutty
+ * @since 19 July, 2015 
  * 
  * Basic Utility class for cleaning the posts fetched from different social channels.
  * The utility functions include removing HTML tags, removing http hyperlinks

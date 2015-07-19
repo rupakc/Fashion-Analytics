@@ -158,7 +158,8 @@ public class UserFetch {
 		} 
 
 		mongo.closeConnection();
-	}
+	} 
+	
 	/** 
 	 * Given a link to the API endpoint returns the JSON response
 	 * @param link String containing the link of the endpoint

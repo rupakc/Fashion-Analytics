@@ -263,6 +263,7 @@ public class MongoBase {
 				append("ImageLink", instagram.getImageURL()).
 				append("ImageWidth", instagram.getImageWidth()).
 				append("ImageHeight", instagram.getImageHeight()).
+				append("Country",instagram.getCountry()).
 				append("Type", "tag");
 
 		return insta_doc;

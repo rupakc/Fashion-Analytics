@@ -31,6 +31,7 @@ public class Tag {
 	private String image_url;
 	private int image_height;
 	private int image_width;
+	private String country = "";
 	
 	/** 
 	 * public constructor to initialize the fields with default values
@@ -49,6 +50,7 @@ public class Tag {
 		tag_id = "";
 		filter = "";
 		type = "";
+		country = "";
 		tag_set = new HashSet<String>();
 		like_count = 0;
 		link = "";
@@ -57,6 +59,7 @@ public class Tag {
 		image_width = 0;
 		comment_count = 0;
 	} 
+	 
 	
 	/** 
 	 * Returns the image url of a given post
@@ -199,8 +202,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the timestamp of the given post
+	 * @return Double number containing the timestamp
 	 */ 
 	
 	public double getTimestamp() { 
@@ -209,8 +212,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param timestamp
+	 * Sets the timestamp of a given post
+	 * @param timestamp Double containing the timestamp
 	 */ 
 	
 	public void setTimestamp(double timestamp) { 
@@ -219,8 +222,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the tagId associated with a given post
+	 * @return String containing the tagId
 	 */ 
 	
 	public String getTagId() { 
@@ -229,8 +232,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param tag_id
+	 * Sets the tag_id for a given tag
+	 * @param tag_id String containing the tag id
 	 */ 
 	
 	public void setTagId(String tag_id) { 
@@ -239,8 +242,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the filter used for the given post
+	 * @return String containing the filter name
 	 */ 
 	
 	public String getFilter() { 
@@ -249,8 +252,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param filter
+	 * Sets the type of filter used on a photo
+	 * @param filter String containing the type of filter
 	 */ 
 	
 	public void setFilter(String filter) { 
@@ -259,8 +262,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the type of post (i.e. Photo or Video)
+	 * @return String containing the type of post 
 	 */ 
 	
 	public String getType() { 
@@ -269,8 +272,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param type
+	 * Sets the type of post (i.e. photo or video)
+	 * @param type String containing the type of post
 	 */ 
 	
 	public void setType(String type) { 
@@ -279,8 +282,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the caption text associated with a given post
+	 * @return String containing the caption text
 	 */ 
 	
 	public String getCaptionText() { 
@@ -289,8 +292,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param caption_text
+	 * Sets the caption text of a given post
+	 * @param caption_text String containing the caption text
 	 */ 
 	
 	public void setCaptionText(String caption_text) { 
@@ -299,8 +302,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the set of tags associated with a given Instagram post
+	 * @return Set<String> containing the tagset
 	 */ 
 	
 	public Set<String> getTagSet() { 
@@ -309,8 +312,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param tag_set
+	 * Sets the Tagset of a given Instagram post
+	 * @param tag_set Set<String> containing the tagset
 	 */ 
 	
 	public void setTagSet(Set<String> tag_set) { 
@@ -319,8 +322,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the number of likes received by a given tag post
+	 * @return Integer containing the number of likes
 	 */ 
 	
 	public int getLikeCount() { 
@@ -329,8 +332,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param like_count
+	 * Sets the number of likes of a given tag post
+	 * @param like_count Integer containing the number of likes
 	 */ 
 	
 	public void setLikeCount(int like_count) { 
@@ -339,8 +342,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the url of the given tag post
+	 * @return String containing the link
 	 */ 
 	
 	public String getLink() { 
@@ -349,8 +352,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param link
+	 * Sets the url of a given tag
+	 * @param link String containing the link to the post
 	 */ 
 	
 	public void setLink(String link) { 
@@ -359,8 +362,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the latitude of a given post
+	 * @return Double containing the latitude
 	 */ 
 	
 	public double getLatitude() { 
@@ -417,5 +420,25 @@ public class Tag {
 	public void setCommentCount(int comment_count) { 
 		
 		this.comment_count = comment_count;
+	}
+	
+	/** 
+	 * Returns the country name associated with the given post
+	 * @return String containing the country name
+	 */ 
+	
+	public String getCountry() { 
+		
+		return country;
+	}
+	
+	/** 
+	 * Sets the country name of the given post
+	 * @param country String containing the country name
+	 */
+	
+	public void setCountry(String country) { 
+		
+		this.country = country;
 	}
 }

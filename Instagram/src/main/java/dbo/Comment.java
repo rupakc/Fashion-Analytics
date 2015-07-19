@@ -5,8 +5,8 @@ import java.util.Date;
 /** 
  * Defines a Youtube comment object which is to be used for inserting in the database
  * @author Rupak Chakraborty
- * @for Adobe Systems,India
- * @since 16 June, 2015
+ * @for Kutty
+ * @since 18 July, 2015
  *
  */ 
 
@@ -25,7 +25,7 @@ public class Comment {
 	private String channel; 
 	
 	/** 
-	 * 
+	 * public constructor to initialize the Youtube comment object with default values
 	 */ 
 	
 	public Comment() { 
