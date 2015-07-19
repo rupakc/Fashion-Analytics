@@ -19,6 +19,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.WriteConcern;
 import com.mongodb.WriteResult;
 
+import dbo.GeoData;
 import dbo.InstaComment;
 import dbo.InstaLike;
 import dbo.Tag;
@@ -694,9 +695,57 @@ public class MongoBase {
 
 		return false;
 	}
-
+	
 	/** 
-	 * closes an open connection to the mongodb server
+	 * Adaptor function to convert a GeoData object into a BasicDBObject
+	 * @param geodata GeoData object which is to be converted to a BasicDBObject
+	 * @return BasicDBObject containing the representation of the GeoData object
+	 */ 
+	
+	public BasicDBObject getGeoDataAdaptor(GeoData geodata) { 
+	
+		BasicDBObject geo_doc = new BasicDBObject("CountryName",geodata.getCountryName()).
+								append("CountryCode", geodata.getCountryCode()).
+								append("PlaceId", geodata.getPlaceId()).
+								append("StreetNumber", geodata.getStreetNumber()).
+								append("Route", geodata.getRoute()).
+								append("Locality", geodata.getLocality()).
+								append("Neighborhood", geodata.getNeighborhood()).
+								append("PostalCode", geodata.getPostalCode()).
+								append("FormattedAddress", geodata.getFormattedAddress()).
+								append("LocationLatitude", geodata.getLocationLatitude()).
+								append("LocationLongitude", geodata.getLocationLongitude()).
+								append("LocationType", geodata.getLocationType()).
+								append("ViewportNorthEastLatitude", geodata.getViewportNortheastLatitude()).
+								append("ViewportNorthEastLongitude", geodata.getViewportNortheastLongitude()).
+								append("ViewportSouthWestLatitude", geodata.getViewportSouthwestLatitude()).
+								append("ViewportSouthWestLongitude", geodata.getViewportSouthwestLongitude());
+		
+		return geo_doc;
+	}
+	
+	/** 
+	 * Inserts a GeoData object in the database if it doesn't already exist
+	 * @param geodata GeoData object which is to be inserted in the database
+	 */ 
+	
+	public void putInDB(GeoData geodata) { 
+		
+		DBObject query;
+		DBCursor cursor;
+		
+		query = new BasicDBObject("PlaceId",geodata.getPlaceId());
+		cursor = collection.find(query);
+		
+		if(!cursor.hasNext()) { 
+			
+			BasicDBObject geo_doc = getGeoDataAdaptor(geodata);
+			insertDocument(geo_doc);
+		}
+	}
+	
+	/** 
+	 * Closes an open connection to the mongodb server
 	 */ 
 	
 	public void closeConnection() { 
