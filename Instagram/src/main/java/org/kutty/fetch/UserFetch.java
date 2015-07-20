@@ -11,10 +11,9 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
-import db.MongoBase;
-import dbo.Tag;
-import dbo.User;
+import org.kutty.db.MongoBase;
+import org.kutty.dbo.Tag;
+import org.kutty.dbo.User;
 
 
 /** 

@@ -7,6 +7,8 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 
+import org.kutty.db.MongoBase;
+
 import com.github.jreddit.entity.Submission;
 import com.github.jreddit.entity.User;
 import com.github.jreddit.retrieval.Submissions;
@@ -16,8 +18,6 @@ import com.github.jreddit.retrieval.params.SubmissionSort;
 import com.github.jreddit.retrieval.params.TimeSpan;
 import com.github.jreddit.utils.restclient.HttpRestClient;
 import com.github.jreddit.utils.restclient.RestClient;
-
-import db.MongoBase;
 
 /** 
 * @author Rupak Chakraborty

@@ -10,9 +10,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
-import db.MongoBase;
-import dbo.GeoData;
+import org.kutty.db.MongoBase;
+import org.kutty.dbo.GeoData;
 
 /** 
  * Given the latitude and longitude of a place retrieves the address and other Geodata like
