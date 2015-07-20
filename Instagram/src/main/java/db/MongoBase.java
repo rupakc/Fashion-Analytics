@@ -24,6 +24,7 @@ import dbo.InstaComment;
 import dbo.InstaLike;
 import dbo.Tag;
 import dbo.User;
+import dbo.CountryBase;
 import facebook4j.Post;
 import facebook4j.ResponseList;
 
@@ -743,6 +744,66 @@ public class MongoBase {
 			insertDocument(geo_doc);
 		}
 	}
+	
+	/** 
+	 * Adaptor function to convert a given country base object a DBObject for insertion in MongoDB
+	 * @param country CountryBase object which is to be inserted in the database
+	 * @return DBObject containing the country base object
+	 */ 
+
+	public DBObject getCountryBaseAdaptor(CountryBase country) { 
+
+		DBObject country_doc = new BasicDBObject("Channel",country.getChannel()).
+				append("Username", country.getUsername()).
+				append("Country", country.getCountry()).
+				append("Code", country.getCode()).
+				append("TimeStamp", country.getTimestamp()).
+				append("Product", country.getProduct());
+
+		return country_doc;
+	}
+
+	/** 
+	 * Checks whether a given location object already exists in the database or not
+	 * @param country CountryBase object which is to be inserted
+	 * @return true if the object already exists false otherwise
+	 */ 
+
+	public boolean checkExists(DBObject country) { 
+
+		BasicDBObject query;
+		DBCursor cursor;
+
+		query = new BasicDBObject("Username",country.get("Username")).
+				append("TimeStamp", country.get("TimeStamp")).
+				append("Country", country.get("Country")).
+				append("Channel", country.get("Channel"));
+
+		cursor = collection.find(query);
+
+		if (cursor.hasNext()) { 
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/** 
+	 * Inserts a country in the database if its not already present
+	 * @param country CountryBase object which is to be inserted
+	 */ 
+
+	public void putInDB(CountryBase country) { 
+
+		DBObject country_doc =  getCountryBaseAdaptor(country);
+
+		if (!checkExists(country_doc)) { 
+
+			insertDocument((BasicDBObject) country_doc);
+		}
+	}
+
 	
 	/** 
 	 * Closes an open connection to the mongodb server
