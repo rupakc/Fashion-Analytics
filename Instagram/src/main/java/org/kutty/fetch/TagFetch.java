@@ -13,11 +13,12 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.kutty.db.MongoBase;
-import org.kutty.dbo.GeoData;
-import org.kutty.dbo.InstaComment;
-import org.kutty.dbo.InstaLike;
-import org.kutty.dbo.Tag;
+
+import db.MongoBase;
+import dbo.GeoData;
+import dbo.InstaComment;
+import dbo.InstaLike;
+import dbo.Tag;
 
 
 /** 

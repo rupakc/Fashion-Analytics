@@ -1,6 +1,0 @@
-1. Deriving the satisfaction of people associated with a particular brand from the sentiments.
-2. Get a view of the top trends in fashion. 
-3. Determine whether a given post is associated with a giveaway or not... (as you mentioned we might treat giveaway as a spam). This can also be extended to the giveaway app as you have mentioned. 
-4. Profile each user and find out how important they/their posts are in relation to the fashion world. This will be really helpful information with regard to the people you need to follow to get the most valuable information.
-5. Additionally determine what tags/content makes a particular post go viral. Interesting isn't it...?
-6. User behaviour analysis mostly from psychological standpoint. 

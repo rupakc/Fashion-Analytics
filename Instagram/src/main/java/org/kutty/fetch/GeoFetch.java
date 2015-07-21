@@ -4,61 +4,45 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.UnknownHostException;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.kutty.db.MongoBase;
-import org.kutty.dbo.GeoData;
 
-/** 
- * Given the latitude and longitude of a place retrieves the address and other Geodata like
- * Country Name, Street number, Locality, Neighborhood etc. Using google maps API 
- * 
- * @author Rupak Chakraborty
- * @for Kutty
- * @since 19 July,2015
- *
- */ 
+import dbo.GeoData;
 
-public class GeoFetch {
+public class GeoFetch {	
+	//http://maps.googleapis.com/maps/api/geocode/json?latlng=1.327904258,103.84861408&sensor=true
 	
 	String base_url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=";
 	String latitude;
 	String longitude; 
 	String endpoint = ""; 
 	
-	public String getLatitude() { 
-		
+	public String getLatitude() { 		
 		return latitude;
 	} 
 	
-	public void setLatitude(String latitude) { 
-		
+	public void setLatitude(String latitude) { 		
 		this.latitude = latitude;
 	} 
 	
-	public String getLongitude() { 
-		
+	public String getLongitude() { 		
 		return longitude;
 	} 
 	
-	public void setLongitude(String longitude) { 
-		
+	public void setLongitude(String longitude) { 		
 		this.longitude = longitude;
 	}
 	
 	public GeoFetch() { 
-		
 		latitude = "";
 		longitude = "";
 		endpoint = base_url;
 	}
 	
 	public GeoFetch(String latitude,String longitude) { 
-		
 		this.latitude = latitude.trim();
 		this.longitude = longitude.trim();
 		
@@ -73,7 +57,6 @@ public class GeoFetch {
 	 */ 
 
 	public String getJSONResponse(String link)throws IOException { 
-
 		URL url = new URL(link);
 		String temp = "";
 		String response = "";
@@ -82,15 +65,13 @@ public class GeoFetch {
 		br = new BufferedReader(new InputStreamReader(url.openStream()));
 
 		while((temp = br.readLine()) != null) { 
-
 			response = response + temp;
 		}
 
 		return response;
 	}
 	
-	public JSONObject getParsedJSON(String json_response) throws ParseException { 
-		
+	public JSONObject getParsedJSON(String json_response) throws ParseException { 		
 		JSONParser parser = new JSONParser();
 		JSONObject parsed_response; 
 		
@@ -99,23 +80,20 @@ public class GeoFetch {
 		return parsed_response;
 	}
 	
-	public boolean checkStatus(JSONObject parsed_response) { 
-		
+	public boolean checkStatus(JSONObject parsed_response) { 		
 		String metric = "OK";
 		String status = "";
 		
 		status = (String) parsed_response.get("status");
 		
-		if (status.equalsIgnoreCase(metric)) { 
-			
+		if (status.equalsIgnoreCase(metric)) { 			
 			return true;
 		}
 		
 		return false;
 	}
 	
-	public GeoData GeoFetchPipeline(String latitude,String longitude) throws IOException, ParseException { 
-		
+	public GeoData GeoFetchPipeline(String latitude,String longitude) throws IOException, ParseException { 		
 		this.latitude = latitude.trim();
 		this.longitude = longitude.trim();
 		
@@ -126,48 +104,16 @@ public class GeoFetch {
 		JSONObject parsed_response = getParsedJSON(json_response);
 		GeoData geodata = new GeoData(); 
 		
-		if (checkStatus(parsed_response)) { 
-			
+		if (checkStatus(parsed_response)) { 			
 			JSONArray results = (JSONArray) parsed_response.get("results");
 			JSONObject data_object = (JSONObject) results.get(0);
 			geodata = getGeoDataFromJSON(data_object);
 		}
 		
 		return geodata;
-	}
-	
-	public void GeoFetchAndStorePipeline(String latitude,String longitude) throws IOException, ParseException { 
-		
-		this.latitude = latitude.trim();
-		this.longitude = longitude.trim();
-		
-		String suffix = this.latitude + "," + this.longitude;
-		endpoint = base_url + suffix;
-		
-		String json_response = getJSONResponse(this.endpoint);
-		JSONObject parsed_response = getParsedJSON(json_response);
-		GeoData geodata = new GeoData(); 
-		
-		if (checkStatus(parsed_response)) { 
-			
-			JSONArray results = (JSONArray) parsed_response.get("results");
-			JSONObject data_object = (JSONObject) results.get(0);
-			geodata = getGeoDataFromJSON(data_object);
-			insertInDB(geodata);
-		}
 	} 
 	
-	public void insertInDB(GeoData geodata) throws UnknownHostException { 
-		
-		MongoBase mongo = new MongoBase();
-		mongo.setDB("GeoData");
-		mongo.setCollection("Central");
-		mongo.putInDB(geodata);
-		mongo.closeConnection();
-	}
-	
-	public GeoData getGeoDataFromJSON(JSONObject data_object) { 
-		
+	public GeoData getGeoDataFromJSON(JSONObject data_object) { 		
 		GeoData geodata = new GeoData(); 
 		
 		String country_name = "";
@@ -213,43 +159,35 @@ public class GeoFetch {
 		viewport_southwest_latitude = (double) viewport_southwest.get("lat");
 		viewport_southwest_longitude = (double) viewport_southwest.get("lng");
 		
-		for (int i = 0; i < address_components.size(); i++) { 
-			
+		for (int i = 0; i < address_components.size(); i++) { 			
 			temp = (JSONObject) address_components.get(i);
 			temp_types = (JSONArray) temp.get("types");
 			
-			for (int j = 0; j < temp_types.size(); j++) { 
-				
+			for (int j = 0; j < temp_types.size(); j++) { 				
 				String type = (String) temp_types.get(j);
 				
-				if (type.equalsIgnoreCase("street_number")) { 
-					
+				if (type.equalsIgnoreCase("street_number")) { 					
 					street_number = ((String) temp.get("long_name")); 
 				}
 				
-				else if (type.equalsIgnoreCase("country")) { 
-					
+				else if (type.equalsIgnoreCase("country")) { 					
 					country_name = (String) temp.get("long_name");
 					country_code = (String) temp.get("short_name");
 				}
 				
-				else if (type.equalsIgnoreCase("route")) { 
-					
+				else if (type.equalsIgnoreCase("route")) { 					
 					route = (String) temp.get("long_name");
 				}
 				
-				else if (type.equalsIgnoreCase("locality")) { 
-					
+				else if (type.equalsIgnoreCase("locality")) { 					
 					locality = (String) temp.get("long_name");
 				}
 				
-				else if (type.equalsIgnoreCase("neighborhood")) { 
-					
+				else if (type.equalsIgnoreCase("neighborhood")) { 					
 					neighborhood = (String) temp.get("long_name");
 				}
 				
-				else if (type.equalsIgnoreCase("postal_code")) { 
-					
+				else if (type.equalsIgnoreCase("postal_code")) { 					
 					postal_code = (String) temp.get("long_name");
 				}
 			}
@@ -272,14 +210,11 @@ public class GeoFetch {
 		geodata.setViewportSouthwestLatitude(viewport_southwest_latitude);
 		geodata.setViewportSouthwestLongitude(viewport_southwest_longitude);
 		
-		return geodata;
-		
+		return geodata;		
 	}
 
-	public static void main(String args[]) throws IOException, ParseException { 
-		
+	public static void main(String args[]) throws IOException, ParseException { 		
 		GeoFetch geo = new GeoFetch("1.327904258","103.84861408");
 		System.out.println(geo.GeoFetchPipeline("1.327904258","103.84861408"));
-	}
-	
+	}	
 }

@@ -12,9 +12,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.kutty.db.MongoBase;
-import org.kutty.dbo.Comment;
-import org.kutty.utils.DateConverter;
+
+import utils.DateConverter;
 
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpRequest;
@@ -25,6 +24,9 @@ import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Thumbnail;
+
+import db.MongoBase;
+import dbo.Comment;
 
 /** 
  * Fetches comments from youtube videos using Youtube Date API version 3.0 and Stores them in MongoDB
