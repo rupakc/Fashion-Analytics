@@ -9,10 +9,11 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import utils.LanguageDetector;
+import org.kutty.db.MongoBase;
+import org.kutty.utils.LanguageDetector;
+
 import com.cybozu.labs.langdetect.LangDetectException;
 
-import db.MongoBase;
 import facebook4j.Facebook;
 import facebook4j.FacebookException;
 import facebook4j.FacebookFactory;

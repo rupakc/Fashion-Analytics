@@ -13,11 +13,11 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
-import db.MongoBase;
-import dbo.InstaComment;
-import dbo.InstaLike;
-import dbo.Tag;
+import org.kutty.db.MongoBase;
+import org.kutty.dbo.GeoData;
+import org.kutty.dbo.InstaComment;
+import org.kutty.dbo.InstaLike;
+import org.kutty.dbo.Tag;
 
 
 /** 
@@ -381,14 +381,17 @@ public class TagFetch extends Thread{
 	 * Converts a given JSON post object into a Instagram Tag object
 	 * @param data_object JSONObject which is to be inserted into the database
 	 * @return Tag object containing the necessary fields of a Instagram post
+	 * @throws ParseException 
+	 * @throws IOException 
 	 */ 
 
-	public Tag getInstagramTagObject(JSONObject data_object) { 
+	public Tag getInstagramTagObject(JSONObject data_object) throws IOException, ParseException { 
 
 		Tag tag = new Tag(); 
 
 		String username = "";
 		String profile_picture = "";
+		String country = "";
 		String full_name = "";
 		String user_id = "";
 		String image_url;
@@ -434,9 +437,13 @@ public class TagFetch extends Thread{
 
 				latitude = (Double) (location.get("latitude"));
 				longitude = (Double) (location.get("longitude"));
+				
+				GeoFetch geofetch = new GeoFetch();
+				GeoData geodata = geofetch.GeoFetchPipeline(String.valueOf(latitude), String.valueOf(longitude));
+				country = geodata.getCountryName();
 			}
 		}
-
+		
 		temp_caption = data_object.get("caption");
 
 		if (temp_caption != null) { 
@@ -494,6 +501,7 @@ public class TagFetch extends Thread{
 		tag.setImageURL(image_url);
 		tag.setImageHeight(image_height);
 		tag.setImageWidth(image_width); 
+		tag.setCountry(country);
 
 		return tag;
 	} 
@@ -641,7 +649,7 @@ public class TagFetch extends Thread{
 
 	public static void main(String args[]) throws IOException, ParseException { 
 
-		TagFetch tags = new TagFetch("zara");
+		TagFetch tags = new TagFetch("levis");
 		tags.start();
 	}
 }

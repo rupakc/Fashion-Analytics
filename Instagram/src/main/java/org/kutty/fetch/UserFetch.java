@@ -5,13 +5,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
-import db.MongoBase;
-import dbo.User;
+import org.kutty.db.MongoBase;
+import org.kutty.dbo.Tag;
+import org.kutty.dbo.User;
 
 
 /** 
@@ -30,36 +32,36 @@ public class UserFetch {
 	String base_url; 
 	String suffix_url; 
 	String user_endpoint; 
-	
+
 	/** 
 	 * public constructor to intialize the base url, suffix url and access token with default values 
 	 */ 
-	
+
 	public UserFetch() { 
 
 		base_url = "https://api.instagram.com/v1/users/";
 		suffix_url = "/?access_token=";
 		access_token = "1058271351.5b9e1e6.c1ba660f72704f8d98c48340e3029e9e";
 	}
-	
+
 	/** 
 	 * public constructor to initialize the access_token for making api calls
 	 * @param access_token String containing the access_token
 	 */ 
-	
+
 	public UserFetch(String access_token) { 
 
 		this.access_token = access_token;
 		base_url = "https://api.instagram.com/v1/users/";
 		suffix_url = "/?access_token=";
 	}
-	
+
 	/** 
-	 * public constructor to initialize the  
-	 * @param user_id
-	 * @param access_token
+	 * public constructor to initialize the userId and access-token 
+	 * @param user_id String containing the user_id
+	 * @param access_token String containing the access_token
 	 */ 
-	
+
 	public UserFetch(String user_id,String access_token) {
 
 		this.access_token = access_token;
@@ -143,22 +145,29 @@ public class UserFetch {
 
 	} 
 
+	/** 
+	 * Inserts a given user object into MongoDB
+	 * @param user User object which is to be inserted
+	 * @throws UnknownHostException
+	 */ 
+
 	public void insertInDB(User user) throws UnknownHostException { 
 
 		MongoBase mongo = new MongoBase();
 		mongo.setCollection("Fashion"); 
-		
+
 		try { 
-			
+
 			mongo.putInDB(user); 
-			
+
 		} catch (Exception e) { 
-			
+
 			mongo.closeConnection();
 		} 
 
 		mongo.closeConnection();
-	}
+	} 
+
 	/** 
 	 * Given a link to the API endpoint returns the JSON response
 	 * @param link String containing the link of the endpoint
@@ -183,10 +192,204 @@ public class UserFetch {
 		return response;
 	} 
 
+	/** 
+	 * Searches a user by name and returns the set of top matches(max 50)
+	 * @param name String containing the username to search
+	 * @return ArrayList<User> containing the list of users returned through search
+	 * @throws IOException
+	 * @throws ParseException
+	 */ 
+
+	public ArrayList<User> searchUsersByName(String name) throws IOException, ParseException { 
+
+		String prefix_url = "https://api.instagram.com/v1/users/search?q=";
+		String suffix_url = "&access_token=1058271351.5b9e1e6.c1ba660f72704f8d98c48340e3029e9e";
+		String url = prefix_url + name.trim() + suffix_url;
+
+		String json_response = getJSONResponse(url);
+		JSONArray data_array;
+		User user;
+		ArrayList<User> user_arrays = new ArrayList<User>();
+		JSONParser parser = new JSONParser();
+		JSONObject parsed_object;
+		JSONObject temp_object; 
+
+		String username = "";
+		String profile_picture = "";
+		String id = "";
+		String full_name = ""; 
+
+		parsed_object = (JSONObject) parser.parse(json_response);
+		data_array = (JSONArray) parsed_object.get("data");
+
+		for (int i = 0; i < data_array.size(); i++) { 
+
+			temp_object = (JSONObject) data_array.get(i);
+			user = new User();
+			username = (String) temp_object.get("username");
+			profile_picture = (String) temp_object.get("profile_picture");
+			id = (String) temp_object.get("id");
+			full_name = (String) temp_object.get("full_name");
+
+			user.setUsername(username);
+			user.setProfilePicture(profile_picture);
+			user.setId(id);
+			user.setFullName(full_name);
+
+			user_arrays.add(user);
+
+		}
+
+		return user_arrays;
+	} 
+
+	/** 
+	 * Fetches a set of recent posts made by a user
+	 * @param userId String containing the userId 
+	 * @throws IOException
+	 * @throws ParseException
+	 */ 
+
+	public void getRecentMediaForUser(String userId) throws IOException, ParseException { 
+
+		String prefix_url = "https://api.instagram.com/v1/users/";
+		String suffix_url = "/media/recent?access_token=1058271351.5b9e1e6.c1ba660f72704f8d98c48340e3029e9e";
+		String endpoint = prefix_url + userId.trim() + suffix_url;
+
+		String json_response = getJSONResponse(endpoint);
+		JSONArray data_array;
+		JSONParser parser = new JSONParser();
+		JSONObject parsed_object;
+		JSONObject temp_object; 
+		TagFetch tagfetch = new TagFetch(); 
+		Tag instagram_tag;
+		parsed_object = (JSONObject) parser.parse(json_response);
+		data_array = (JSONArray) parsed_object.get("data");
+
+		for (int i = 0; i < data_array.size(); i++) { 
+
+			temp_object = (JSONObject) data_array.get(i);
+			instagram_tag = tagfetch.getInstagramTagObject(temp_object);
+			System.out.println(instagram_tag.getCommentCount());
+		}
+	} 
+
+	/** 
+	 * Returns a list of users who the given user follows
+	 * @param userId String containing the userId
+	 * @return ArrayList<User> containing the list of users 
+	 * @throws IOException
+	 * @throws ParseException
+	 */ 
+
+	public ArrayList<User> getUserFollowsList(String userId) throws IOException, ParseException { 
+
+		String prefix_url = "https://api.instagram.com/v1/users/";
+		String suffix_url = "/follows?access_token=1058271351.5b9e1e6.c1ba660f72704f8d98c48340e3029e9e";
+		String url = prefix_url + userId.trim() + suffix_url;
+
+		String json_response = getJSONResponse(url);
+		JSONArray data_array;
+		User user;
+		ArrayList<User> user_arrays = new ArrayList<User>();
+		JSONParser parser = new JSONParser();
+		JSONObject parsed_object;
+		JSONObject temp_object; 
+
+		String username = "";
+		String profile_picture = "";
+		String id = "";
+		String full_name = ""; 
+
+		parsed_object = (JSONObject) parser.parse(json_response);
+		data_array = (JSONArray) parsed_object.get("data");
+
+		for (int i = 0; i < data_array.size(); i++) { 
+
+			temp_object = (JSONObject) data_array.get(i);
+			user = new User();
+			username = (String) temp_object.get("username");
+			profile_picture = (String) temp_object.get("profile_picture");
+			id = (String) temp_object.get("id");
+			full_name = (String) temp_object.get("full_name");
+
+			user.setUsername(username);
+			user.setProfilePicture(profile_picture);
+			user.setId(id);
+			user.setFullName(full_name);
+
+			user_arrays.add(user);
+
+		}
+
+		return user_arrays;
+	} 
+
+	/** 
+	 * Returns a list of users who follow a given user
+	 * @param userId String containing the userId of the user 
+	 * @return ArrayList<String> containing the list of users followed
+	 * @throws IOException
+	 * @throws ParseException
+	 */ 
+
+	public ArrayList<User> getFollowedByUserList(String userId) throws IOException, ParseException { 
+
+		String prefix_url = "https://api.instagram.com/v1/users/";
+		String suffix_url = "/followed-by?access_token=1058271351.5b9e1e6.c1ba660f72704f8d98c48340e3029e9e";
+		String url = prefix_url + userId.trim() + suffix_url;
+
+		String json_response = getJSONResponse(url);
+		JSONArray data_array;
+		User user;
+		ArrayList<User> user_arrays = new ArrayList<User>();
+		JSONParser parser = new JSONParser();
+		JSONObject parsed_object;
+		JSONObject temp_object; 
+
+		String username = "";
+		String profile_picture = "";
+		String id = "";
+		String full_name = ""; 
+
+		parsed_object = (JSONObject) parser.parse(json_response);
+		data_array = (JSONArray) parsed_object.get("data");
+
+		for (int i = 0; i < data_array.size(); i++) { 
+
+			temp_object = (JSONObject) data_array.get(i);
+			user = new User();
+			username = (String) temp_object.get("username");
+			profile_picture = (String) temp_object.get("profile_picture");
+			id = (String) temp_object.get("id");
+			full_name = (String) temp_object.get("full_name");
+
+			user.setUsername(username);
+			user.setProfilePicture(profile_picture);
+			user.setId(id);
+			user.setFullName(full_name);
+
+			user_arrays.add(user);
+
+		}
+
+		return user_arrays;
+	} 
+
+	/** 
+	 * Main function to test out the functionality of the given code
+	 * @param args
+	 * @throws IOException
+	 * @throws ParseException
+	 */ 
+
 	public static void main(String args[]) throws IOException, ParseException { 
 
 		UserFetch userfetch = new UserFetch();
 
-		userfetch.fetchAndStore("145483772");
+		System.out.println(userfetch.searchUsersByName("rupak"));
+		userfetch.getRecentMediaForUser("145483772");
+		userfetch.getUserFollowsList("145483772");
+		userfetch.getFollowedByUserList("145483772");
 	}
 }
