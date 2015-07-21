@@ -46,9 +46,9 @@ public class Tube extends Thread {
 	public String product; 
 	
 	/** 
-	 * public constructor to initialize the product name and the search query
-	 * @param product String containing the product name
-	 * @param query String containing the search query
+	 * 
+	 * @param product
+	 * @param query
 	 */ 
 	
 	public Tube(String product,String query) { 
@@ -58,10 +58,10 @@ public class Tube extends Thread {
 	} 
 	
 	/** 
-	 * public constructor to initialize the product name, search query and api key
-	 * @param product String containing the product name
-	 * @param query String containing the search query
-	 * @param api_key String containing the api key
+	 * 
+	 * @param product
+	 * @param query
+	 * @param api_key
 	 */ 
 	
 	public Tube(String product,String query,String api_key) { 
@@ -72,11 +72,11 @@ public class Tube extends Thread {
 	}
 	
 	/** 
-	 * public constructor to initialize the product name, query and the api key
-	 * @param product String containing the product name
-	 * @param query String containing the query term
-	 * @param api_key String containing the api key
-	 * @param number_of_videos long containing the number of videos returned
+	 * 
+	 * @param product
+	 * @param query
+	 * @param api_key
+	 * @param number_of_videos
 	 */ 
 	
 	public Tube(String product,String query,String api_key,long number_of_videos) { 
@@ -89,8 +89,7 @@ public class Tube extends Thread {
 
 
 	/**
-	 * Returns the query term for a search
-	 * @return String containing the query
+	 * @return the query
 	 */ 
 
 	public String getQuery() { 
@@ -99,7 +98,6 @@ public class Tube extends Thread {
 	}
 
 	/**
-	 * Sets the search query term
 	 * @param query the query to set
 	 */ 
 
@@ -109,8 +107,7 @@ public class Tube extends Thread {
 	}
 
 	/**
-	 * Returns the API_KEY used to make calls
-	 * @return the API_KEY
+	 * @return the aPI_KEY
 	 */ 
 
 	public String getAPI_KEY() { 
@@ -119,18 +116,15 @@ public class Tube extends Thread {
 	}
 
 	/**
-	 * Sets the API_KEY used to make calls
 	 * @param aPI_KEY the aPI_KEY to set
-	 */ 
-	
+	 */
 	public void setAPI_KEY(String API_KEY) { 
 
 		this.API_KEY = API_KEY;
 	}
 
-	/** 
-	 * Returns the product name to be searched for
-	 * @return String containing the product name
+	/**
+	 * @return the product
 	 */ 
 
 	public String getProduct() { 
@@ -139,7 +133,6 @@ public class Tube extends Thread {
 	}
 
 	/**
-	 * Sets the product name for a given query
 	 * @param product the product to set
 	 */ 
 
@@ -150,7 +143,7 @@ public class Tube extends Thread {
 
 	
 	/** 
-	 * Overloaded run function to support multi-threading
+	 * 
 	 */ 
 	
 	public void run() { 
@@ -159,7 +152,7 @@ public class Tube extends Thread {
 	} 
 	
 	/** 
-	 * Executes a given search query in youtube
+	 * 
 	 */ 
 	
 	public void executeQuery() {  
@@ -202,9 +195,9 @@ public class Tube extends Thread {
 	}
 	
 	/** 
-	 * Prints the search result to console in a pretty fashion
-	 * @param iteratorSearchResults Iterator<SearchResult> containing the search results
-	 * @param query String containing the query which is used for the search
+	 * 
+	 * @param iteratorSearchResults
+	 * @param query
 	 * @throws IOException
 	 */ 
 	
@@ -236,8 +229,8 @@ public class Tube extends Thread {
 	}
 	
 	/** 
-	 * Defines the pipeline for fetching and storing youtube comments in MongoDB
-	 * @param searchResults Iterator<SearchResult> containing the iterator of search results
+	 * 
+	 * @param searchResults
 	 * @throws IOException
 	 * @throws ParseException
 	 */ 
@@ -272,9 +265,9 @@ public class Tube extends Thread {
 	} 
 	
 	/** 
-	 * Returns the video Id of a given search result
-	 * @param rId ResourceId object which contains the video if
-	 * @return String containing the videoId
+	 * 
+	 * @param rId
+	 * @return
 	 */ 
 	
 	public String getVideoId(ResourceId rId) { 
@@ -290,9 +283,9 @@ public class Tube extends Thread {
 	} 
 	
 	/** 
-	 * Given a videoId returns the set of comments associated with in a a json response
-	 * @param videoId String containing the videoId
-	 * @return String containing the JSON response of the comments
+	 * 
+	 * @param videoId
+	 * @return
 	 * @throws IOException
 	 */ 
 	
@@ -316,9 +309,9 @@ public class Tube extends Thread {
 	}  
 	
 	/**
-	 * Parses the JSON response and returns a JSONObject
-	 * @param response String containing the JSON response
-	 * @return JSONObject containing the parsed JSON response
+	 * 
+	 * @param response
+	 * @return
 	 * @throws ParseException
 	 */ 
 	
@@ -332,8 +325,8 @@ public class Tube extends Thread {
 	} 
 	
 	/** 
-	 * Takes a parsed JSON response and instantiates a comment object to store in MongoDB
-	 * @param parsed_response JSONObject containing the parsed JSON response
+	 * 
+	 * @param parsed_response
 	 * @throws UnknownHostException
 	 */ 
 	
@@ -370,8 +363,8 @@ public class Tube extends Thread {
 	}
 	
 	/** 
-	 * Prints the parsed JSON comment response to console in a pretty fashion
-	 * @param parsed_response JSON object containing the parsed response
+	 * 
+	 * @param parsed_response
 	 */ 
 	
 	public void prettyPrintResponse(JSONObject parsed_response) { 
@@ -398,11 +391,6 @@ public class Tube extends Thread {
 			System.out.println("=============================================================");
 		}
 	}
-	
-	/** 
-	 * Main function to test the functionality of the class
-	 * @param args
-	 */ 
 	
 	public static void main(String[] args) {
 

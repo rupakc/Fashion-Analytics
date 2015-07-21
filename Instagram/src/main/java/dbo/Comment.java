@@ -24,10 +24,6 @@ public class Comment {
 	private String viewerRating;  
 	private String channel; 
 	
-	/** 
-	 * 
-	 */ 
-	
 	public Comment() { 
 		
 		channel = "Youtube";
@@ -43,8 +39,7 @@ public class Comment {
 		viewerRating = "none";
 	}
 
-	/** 
-	 * 
+	/**
 	 * @return the channel
 	 */ 
 	
@@ -54,7 +49,6 @@ public class Comment {
 	} 
 	
 	/**
-	 * 
 	 * @param channel the channel to set
 	 */ 
 	
@@ -173,8 +167,7 @@ public class Comment {
 		return author;
 	} 
 	
-	/** 
-	 * 
+	/**
 	 * @param author the author to set
 	 */ 
 	
@@ -183,8 +176,7 @@ public class Comment {
 		this.author = author; 
 	} 
 	
-	/** 
-	 * 
+	/**
 	 * @return the timeStamp
 	 */ 
 	
@@ -193,8 +185,7 @@ public class Comment {
 		return timeStamp;
 	} 
 	
-	/** 
-	 * 
+	/**
 	 * @param timeStamp the timeStamp to set
 	 */ 
 	
@@ -203,8 +194,7 @@ public class Comment {
 		this.timeStamp = timeStamp;
 	} 
 	
-	/** 
-	 * 
+	/**
 	 * @return the updatedAt
 	 */ 
 	
@@ -213,8 +203,7 @@ public class Comment {
 		return updatedAt;
 	} 
 	
-	/** 
-	 * 
+	/**
 	 * @param updatedAt the updatedAt to set
 	 */ 
 	
@@ -223,8 +212,7 @@ public class Comment {
 		this.updatedAt = updatedAt;
 	} 
 	
-	/** 
-	 * 
+	/**
 	 * @return the likeCount
 	 */ 
 	
@@ -233,8 +221,7 @@ public class Comment {
 		return likeCount;
 	} 
 	
-	/** 
-	 * 
+	/**
 	 * @param likeCount the likeCount to set
 	 */ 
 	
@@ -243,8 +230,7 @@ public class Comment {
 		this.likeCount = likeCount;
 	} 
 	
-	/** 
-	 * 
+	/**
 	 * @return the viewerRating
 	 */ 
 	
@@ -253,8 +239,7 @@ public class Comment {
 		return viewerRating;
 	} 
 	
-	/** 
-	 * 
+	/**
 	 * @param viewerRating the viewerRating to set
 	 */ 
 	
