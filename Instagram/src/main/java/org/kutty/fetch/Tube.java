@@ -1,19 +1,25 @@
 package org.kutty.fetch; 
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
-import utils.DateConverter;
+import org.kutty.db.MongoBase;
+import org.kutty.dbo.Comment;
+import org.kutty.utils.DateConverter;
 
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpRequest;
@@ -25,15 +31,12 @@ import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Thumbnail;
 
-import db.MongoBase;
-import dbo.Comment;
-
 /** 
  * Fetches comments from youtube videos using Youtube Date API version 3.0 and Stores them in MongoDB
  * @author Rupak Chakraborty
  * @for Kutty 
  * @since 18 July, 2015
- *
+ * 
  */
 
 public class Tube extends Thread {
@@ -44,49 +47,150 @@ public class Tube extends Thread {
 	public String query; 
 	private String API_KEY = "AIzaSyAHiRQFPc3JmhIR2qzZjdlN-1Vnfli7mWU";
 	public String product; 
-	
+	public Map<String,String> collection_map = new HashMap<String,String>();
+	public Map<String,String> youtube_query_map = new HashMap<String,String>();
+	public String product_list_filename = "product_list.txt"; 
+	public String query_list_filename = "youtube_queries.txt"; 
+
+	/** 
+	 * default public constructor 
+	 */ 
+
+	public Tube() { 
+
+	}
+
+	/** 
+	 * public constructor to initialize the collection name and the youtube query
+	 * @param product String containing the product name
+	 * @throws IOException
+	 */ 
+
+	public Tube(String product) throws IOException { 
+
+		init(this.product_list_filename,this.collection_map);
+		init(this.query_list_filename,this.youtube_query_map);
+		this.product = product.toLowerCase().trim();
+		this.query = youtube_query_map.get(this.product).trim();
+		this.product = collection_map.get(this.product).trim();
+	}
+
 	/** 
 	 * public constructor to initialize the product name and the search query
 	 * @param product String containing the product name
 	 * @param query String containing the search query
+	 * @throws IOException 
 	 */ 
-	
-	public Tube(String product,String query) { 
 
-		this.product = product;
+	public Tube(String product,String query) throws IOException { 
+
+		init(this.product_list_filename,this.collection_map);
+		this.product = product.toLowerCase().trim();
+		this.product = collection_map.get(this.product);
 		this.query = query;
 	} 
-	
+
 	/** 
 	 * public constructor to initialize the product name, search query and api key
 	 * @param product String containing the product name
 	 * @param query String containing the search query
 	 * @param api_key String containing the api key
+	 * @throws IOException 
 	 */ 
-	
-	public Tube(String product,String query,String api_key) { 
 
-		this.product = product;
+	public Tube(String product,String query,String api_key) throws IOException { 
+
+		init(this.product_list_filename,this.collection_map);
+		this.product = product.toLowerCase().trim();
+		this.product = collection_map.get(this.product);
 		this.query = query;
 		this.API_KEY = api_key;
 	}
-	
+
 	/** 
 	 * public constructor to initialize the product name, query and the api key
 	 * @param product String containing the product name
 	 * @param query String containing the query term
 	 * @param api_key String containing the api key
 	 * @param number_of_videos long containing the number of videos returned
+	 * @throws IOException 
 	 */ 
-	
-	public Tube(String product,String query,String api_key,long number_of_videos) { 
 
-		this.product = product;
+	public Tube(String product,String query,String api_key,long number_of_videos) throws IOException { 
+
+		init(this.product_list_filename,this.collection_map);
+		this.product = product.toLowerCase().trim();
+		this.product = collection_map.get(this.product);
 		this.query = query;
 		this.API_KEY = api_key;
 		this.NUMBER_OF_VIDEOS_RETURNED = number_of_videos;
 	}
 
+	/** 
+	 * Utility function to initialize the list of fashion brands and their associated collection names
+	 * @param filename String containing the filename from which the data is to be read
+	 * @throws IOException
+	 */ 
+
+	public void init(String filename,Map<String,String> name_map) throws IOException
+	{ 
+		BufferedReader br;
+		FileReader fr;
+		String alias;
+		String collection_name;
+		String s = ""; 
+		int index; 
+
+		fr = new FileReader(filename);
+		br = new BufferedReader(fr);
+
+		while((s = br.readLine()) != null) { 
+
+			index = s.indexOf('=');
+
+			if(index != -1) { 
+
+				alias = s.substring(0,index);
+				collection_name = s.substring(index+1,s.length());
+				alias = alias.trim();
+				collection_name = collection_name.trim();
+				name_map.put(alias, collection_name); 
+			}
+		}
+
+		br.close();
+		fr.close();
+	}  
+
+	/** 
+	 * Retrieves a set of page names from a given file and returns a set
+	 * @param filename String containing the filename
+	 * @return Set<String> containing the set of fashion queries
+	 * @throws IOException
+	 */ 
+
+	public Set<String> getFashionQueries(String filename) throws IOException { 
+
+		BufferedReader br;
+		FileReader fr;
+		String prompt_alias;
+		String temp = "";
+		Set<String> prompt_names = new HashSet<String>(); 
+
+		fr = new FileReader(filename);
+		br = new BufferedReader(fr); 
+
+		while((temp = br.readLine()) != null) { 
+
+			prompt_alias = temp.trim();
+			prompt_names.add(prompt_alias);
+		}
+
+		br.close();
+		fr.close();
+
+		return prompt_names;
+	}  
 
 	/**
 	 * Returns the query term for a search
@@ -122,7 +226,7 @@ public class Tube extends Thread {
 	 * Sets the API_KEY used to make calls
 	 * @param aPI_KEY the aPI_KEY to set
 	 */ 
-	
+
 	public void setAPI_KEY(String API_KEY) { 
 
 		this.API_KEY = API_KEY;
@@ -148,20 +252,20 @@ public class Tube extends Thread {
 		this.product = product;
 	}
 
-	
+
 	/** 
 	 * Overloaded run function to support multi-threading
 	 */ 
-	
+
 	public void run() { 
-		
+
 		executeQuery();
 	} 
-	
+
 	/** 
 	 * Executes a given search query in youtube
 	 */ 
-	
+
 	public void executeQuery() {  
 
 		try { 
@@ -200,14 +304,14 @@ public class Tube extends Thread {
 		}
 
 	}
-	
+
 	/** 
 	 * Prints the search result to console in a pretty fashion
 	 * @param iteratorSearchResults Iterator<SearchResult> containing the search results
 	 * @param query String containing the query which is used for the search
 	 * @throws IOException
 	 */ 
-	
+
 	public void prettyPrintResult(Iterator<SearchResult> iteratorSearchResults, String query) throws IOException {
 
 		System.out.println("\n=============================================================");
@@ -234,14 +338,14 @@ public class Tube extends Thread {
 			}
 		}
 	}
-	
+
 	/** 
 	 * Defines the pipeline for fetching and storing youtube comments in MongoDB
 	 * @param searchResults Iterator<SearchResult> containing the iterator of search results
 	 * @throws IOException
 	 * @throws ParseException
 	 */ 
-	
+
 	public void fetchPipeline(Iterator<SearchResult> searchResults) throws IOException, ParseException { 
 
 		if (!searchResults.hasNext()) { 
@@ -270,13 +374,13 @@ public class Tube extends Thread {
 			}
 		}
 	} 
-	
+
 	/** 
 	 * Returns the video Id of a given search result
 	 * @param rId ResourceId object which contains the video if
 	 * @return String containing the videoId
 	 */ 
-	
+
 	public String getVideoId(ResourceId rId) { 
 
 		String videoId = ""; 
@@ -288,14 +392,14 @@ public class Tube extends Thread {
 
 		return videoId;
 	} 
-	
+
 	/** 
 	 * Given a videoId returns the set of comments associated with in a a json response
 	 * @param videoId String containing the videoId
 	 * @return String containing the JSON response of the comments
 	 * @throws IOException
 	 */ 
-	
+
 	public String getJsonResponse(String videoId) throws IOException { 
 
 		String base_url = "https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&maxResults=100&videoId=";
@@ -314,14 +418,14 @@ public class Tube extends Thread {
 
 		return response;
 	}  
-	
+
 	/**
 	 * Parses the JSON response and returns a JSONObject
 	 * @param response String containing the JSON response
 	 * @return JSONObject containing the parsed JSON response
 	 * @throws ParseException
 	 */ 
-	
+
 	public JSONObject getParsedResponse(String response) throws ParseException { 
 
 		JSONParser parser = new JSONParser();
@@ -330,13 +434,13 @@ public class Tube extends Thread {
 		return parsed_object;
 
 	} 
-	
+
 	/** 
 	 * Takes a parsed JSON response and instantiates a comment object to store in MongoDB
 	 * @param parsed_response JSONObject containing the parsed JSON response
 	 * @throws UnknownHostException
 	 */ 
-	
+
 	public void getAndStoreParsedResponse(JSONObject parsed_response) throws UnknownHostException { 
 
 		JSONArray jarray = (JSONArray) parsed_response.get("items");
@@ -368,12 +472,12 @@ public class Tube extends Thread {
 
 		mongo.closeConnection();
 	}
-	
+
 	/** 
 	 * Prints the parsed JSON comment response to console in a pretty fashion
 	 * @param parsed_response JSON object containing the parsed response
 	 */ 
-	
+
 	public void prettyPrintResponse(JSONObject parsed_response) { 
 
 		JSONArray jarray = (JSONArray) parsed_response.get("items"); 
@@ -398,15 +502,49 @@ public class Tube extends Thread {
 			System.out.println("=============================================================");
 		}
 	}
-	
+
+	/** 
+	 * For a set of pre-defined fashion queries on youtube defines the pipeline 
+	 * for fetching and storing the youtube comments in file 
+	 * @param filename String containing the filename
+	 * @param collection_name String containing the collection name
+	 */ 
+
+	public void fetchFashionTrendPipeline(String filename,String collection_name) { 
+
+		try { 
+
+			Set<String> fashion_queries = getFashionQueries(filename);
+
+			for (String fashion: fashion_queries) { 
+
+				Tube tube = new Tube();
+				tube.product = collection_name;
+				tube.query = fashion;
+				tube.start();
+			} 
+		} catch(Exception e) { 
+
+			e.printStackTrace();
+		}
+	} 
+
 	/** 
 	 * Main function to test the functionality of the class
 	 * @param args
 	 */ 
-	
+
 	public static void main(String[] args) {
 
-		Tube tube = new Tube("CreativeCloud","Adobe creative cloud");
-		tube.start();
+		Tube tube;
+		try { 
+
+			tube = new Tube("H&M");
+			tube.start(); 
+
+		} catch (IOException e) { 
+
+			e.printStackTrace();
+		}
 	}
 }

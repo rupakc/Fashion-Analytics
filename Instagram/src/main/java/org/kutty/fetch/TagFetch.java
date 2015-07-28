@@ -1,24 +1,25 @@
 package org.kutty.fetch;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
-import db.MongoBase;
-import dbo.GeoData;
-import dbo.InstaComment;
-import dbo.InstaLike;
-import dbo.Tag;
+import org.kutty.db.MongoBase;
+import org.kutty.dbo.GeoData;
+import org.kutty.dbo.InstaComment;
+import org.kutty.dbo.InstaLike;
+import org.kutty.dbo.Tag;
 
 
 /** 
@@ -37,7 +38,11 @@ public class TagFetch extends Thread{
 	public String access_token = "1058271351.5b9e1e6.c1ba660f72704f8d98c48340e3029e9e";
 	public String tag = "fashion";
 	public String suffix_url = "/media/recent?access_token=";
-
+	public String collection_name;
+	public Map<String,String> collection_map = new HashMap<String,String>();
+	public String product_filename = "product_list.txt";
+	public int pagination_limit = 10; 
+	
 	/** 
 	 * public constructor to initialize the tag name
 	 * @param access_token String containing the tag name
@@ -67,6 +72,60 @@ public class TagFetch extends Thread{
 	public TagFetch() { 
 
 	}
+
+	/** 
+	 * 
+	 * @return the collection_name
+	 */ 
+
+	public String getCollectionName() {
+		return collection_name;
+	}
+
+	/** 
+	 * 
+	 * @param collection_name the collection_name to set
+	 */ 
+
+	public void setCollectionName(String collection_name) {
+		this.collection_name = collection_name;
+	}
+
+	/** 
+	 * Utility function to initialize the list of fashion brands and their associated collection names
+	 * @param filename String containing the filename from which the data is to be read
+	 * @throws IOException
+	 */ 
+
+	public void init(String filename,Map<String,String> name_map) throws IOException
+	{ 
+		BufferedReader br;
+		FileReader fr;
+		String alias;
+		String collection_name;
+		String s = ""; 
+		int index; 
+
+		fr = new FileReader(filename);
+		br = new BufferedReader(fr);
+
+		while((s = br.readLine()) != null) { 
+
+			index = s.indexOf('=');
+
+			if(index != -1) { 
+
+				alias = s.substring(0,index);
+				collection_name = s.substring(index+1,s.length());
+				alias = alias.trim();
+				collection_name = collection_name.trim();
+				name_map.put(alias, collection_name); 
+			}
+		}
+
+		br.close();
+		fr.close();
+	}   
 
 	/** 
 	 * Returns the string containing the Json response to a particular query
@@ -371,7 +430,7 @@ public class TagFetch extends Thread{
 				insertInstagramTagObjectInDB(tag,tag_name);
 			} 
 
-			if (page_count > 10) { 
+			if (page_count > pagination_limit) { 
 
 				break;
 			}
@@ -438,13 +497,13 @@ public class TagFetch extends Thread{
 
 				latitude = (Double) (location.get("latitude"));
 				longitude = (Double) (location.get("longitude"));
-				
+
 				GeoFetch geofetch = new GeoFetch();
 				GeoData geodata = geofetch.GeoFetchPipeline(String.valueOf(latitude), String.valueOf(longitude));
 				country = geodata.getCountryName();
 			}
 		}
-		
+
 		temp_caption = data_object.get("caption");
 
 		if (temp_caption != null) { 
@@ -571,10 +630,24 @@ public class TagFetch extends Thread{
 
 	public void insertInstagramTagObjectInDB(Tag tag,String query_tag) throws UnknownHostException { 
 
-		MongoBase mongo = new MongoBase(); 
-		mongo.setCollection("Fashion");
-		mongo.putInDB(tag, query_tag);
-		mongo.closeConnection();
+		MongoBase mongo = null;
+
+		try { 
+			mongo = new MongoBase();
+			mongo.setCollection(this.collection_name);
+			mongo.putInDB(tag, query_tag); 
+
+		} catch (Exception e) { 
+
+			e.printStackTrace();
+		}
+
+		finally { 
+
+			if (mongo != null) { 
+				mongo.closeConnection();
+			}
+		}
 	}
 
 	/** 
@@ -586,10 +659,25 @@ public class TagFetch extends Thread{
 
 	public void insertInstagramCommentObjectInDB(InstaComment comment,String query_tag) throws UnknownHostException { 
 
-		MongoBase mongo = new MongoBase();
-		mongo.setCollection("Fashion");
-		mongo.putInDB(comment, query_tag);
-		mongo.closeConnection();
+		MongoBase mongo = null;  
+
+		try { 
+
+			mongo = new MongoBase();
+			mongo.setCollection(this.collection_name);
+			mongo.putInDB(comment, query_tag); 
+
+		} catch (Exception e) { 
+
+			e.printStackTrace();
+		} 
+
+		finally { 
+
+			if (mongo != null) { 
+				mongo.closeConnection();
+			}
+		}
 	}
 
 	/** 
@@ -601,10 +689,25 @@ public class TagFetch extends Thread{
 
 	public void insertInstagramLikeObjectInDB(InstaLike like,String query_tag) throws UnknownHostException { 
 
-		MongoBase mongo = new MongoBase();
-		mongo.setCollection("Fashion");
-		mongo.putInDB(like, query_tag);
-		mongo.closeConnection();
+		MongoBase mongo = null;  
+
+		try { 
+
+			mongo = new MongoBase();
+			mongo.setCollection(this.collection_name);
+			mongo.putInDB(like, query_tag); 
+
+		} catch(Exception e) { 
+
+			e.printStackTrace();
+		} 
+
+		finally {  
+			
+			if (mongo != null) { 
+				mongo.closeConnection();
+			}
+		}
 	} 
 
 	/** 
@@ -614,16 +717,24 @@ public class TagFetch extends Thread{
 	 * @throws ParseException
 	 */ 
 
-	public void TagPipelineForTopTags(String query) throws IOException, ParseException { 
+	public void TagPipelineForTopTags(String query,String collection_name) throws IOException, ParseException { 
 
 		HashMap<String,Long> tag_map;
 		tag_map = getTopTags(query);
+		setCollectionName(collection_name); 
 
 		for (String s : tag_map.keySet()) { 
 
 			TagPipeline(s);
 		}
 	} 
+
+	public void setCollectionFromFile(String filename,String tag_name) throws IOException { 
+
+		init(filename,this.collection_map);
+		this.tag = tag_name;
+		this.collection_name = collection_map.get(tag_name.toLowerCase().trim()).trim();
+	}  
 
 	/** 
 	 * Overloaded run function of the thread class to support multithreading
@@ -633,6 +744,7 @@ public class TagFetch extends Thread{
 
 		try { 
 
+			setCollectionFromFile(this.product_filename , this.tag);
 			TagPipeline(this.tag); 
 
 		} catch (IOException | ParseException e) {
@@ -650,7 +762,7 @@ public class TagFetch extends Thread{
 
 	public static void main(String args[]) throws IOException, ParseException { 
 
-		TagFetch tags = new TagFetch("levis");
+		TagFetch tags = new TagFetch("guess");
 		tags.start();
 	}
 }
