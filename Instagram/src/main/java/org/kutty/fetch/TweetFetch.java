@@ -7,7 +7,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import org.kutty.db.MongoBase;
 
 import twitter4j.Query;
 import twitter4j.QueryResult;
@@ -16,7 +20,6 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
-import db.MongoBase;
 
 /**
  * Retrives tweets corresponding to a given search term and stores it in MongoDB
@@ -35,25 +38,28 @@ public class TweetFetch extends Thread {
 	String until; 
 	String product_name;
 	HashMap<String,String> product_names = new HashMap<String,String>(); 
-	
+
+	public TweetFetch() { 
+
+	} 
+
 	/** 
 	 * public constructor to initialize the search query and product name
 	 * @param query String containing the query which is to be executed
 	 * @param product_name String containing the product name whose posts are to be searched
 	 * @throws IOException
 	 */ 
-	
+
 	public TweetFetch(String query,String product_name) throws IOException { 
-		
-		//init(("product_list.txt")); 
+
+		init("product_list.txt"); 
 		setKeys(); 
-		
+
 		this.query = query; 
-		this.product_name = product_name;
-		//this.product_name = product_name.toLowerCase();
-		//this.product_name = product_names.get(this.product_name); 
+		this.product_name = product_name.toLowerCase();
+		this.product_name = product_names.get(this.product_name); 
 	}
-	
+
 	/** 
 	 * public constructor to initialize search query, product name, since and until fields
 	 * @param query String containing the search query which is to be executed
@@ -63,10 +69,10 @@ public class TweetFetch extends Thread {
 	 * @param product_name String containing the product name 
 	 * @throws IOException
 	 */ 
-	
+
 	public TweetFetch(String query,int count,String since,String until,String product_name) throws IOException { 
-		
-		//init(("product_list.txt"));
+
+		init(("product_list.txt"));
 		setKeys();
 
 		this.query = query;
@@ -74,17 +80,16 @@ public class TweetFetch extends Thread {
 		this.until = until;
 		this.count = count;
 		this.product_name = product_name;
-		//this.product_name = product_name.toLowerCase();
-		//this.product_name = product_names.get(this.product_name); 
-		
+		this.product_name = product_name.toLowerCase();
+		this.product_name = product_names.get(this.product_name); 
 	} 
-	
+
 	/** 
 	 * Initialize the product list and map them to the collection names 
 	 * @param filename String containing the filename which contains the product list
 	 * @throws IOException 
 	 */ 
-	
+
 	public void init(String filename) throws IOException
 	{ 
 		BufferedReader br;
@@ -115,58 +120,44 @@ public class TweetFetch extends Thread {
 		br.close();
 		fr.close();
 	}  
-	
+
 	/** 
 	 * Overloaded run function to support multi-threading
 	 */ 
-	
+
 	public void run() {
-		
+
 		QueryResult result;
-	
+
 		try {
 			result = getQuery(query);
-			printTweets(result);
-			MongoBase mongo; 
+			//printTweets(result);
+			MongoBase mongo = null; 
+			mongo = new MongoBase();
 			
 			try { 
-			
-				mongo = new MongoBase();
+				
 				mongo.setCollection(product_name);
 				mongo.putInDB(result, product_name); 
-				mongo.closeConnection();
-				
+
 			} catch (UnknownHostException e) {
-		
+
 				e.printStackTrace();
 			}
-			
-		} catch (TwitterException e) {
-			
+
+			finally {  
+				
+				if (mongo != null) { 
+					
+					mongo.closeConnection();
+				}
+			}
+
+		} catch (TwitterException | UnknownHostException e) {
+
 			e.printStackTrace();
 		}
 	} 
-	
-	/** 
-	 * Main function to test the utility of the class
-	 * @param args
-	 * @throws IOException
-	 * @throws TwitterException
-	 */ 
-	
-	public static void main(String args[])throws IOException,TwitterException {
-
-		TweetFetch t1 = new TweetFetch("#zara","Fashion");
-		TweetFetch t2 = new TweetFetch("@zara","Fashion");
-		TweetFetch t3 = new TweetFetch("zara :","Fashion");
-		TweetFetch t4 = new TweetFetch("zara","Fashion");
-		
-		t1.start();
-		t2.start();
-		t3.start();
-		t4.start(); 
-		
-	}
 
 	/** 
 	 * Sets the Access Token, Access Token Secret, Consumer-key
@@ -177,7 +168,7 @@ public class TweetFetch extends Thread {
 	 * @param consumer_key String containing the consumer key which is to be set
 	 * @param consumer_key_secret String containing the consumer key secret which is to be set
 	 */ 
-	
+
 	public void setKeys(String access_token,String access_token_secret,String consumer_key,String consumer_key_secret) {
 
 		accessToken = new AccessToken(access_token, access_token_secret);
@@ -189,7 +180,7 @@ public class TweetFetch extends Thread {
 	 * Sets the Access Token, Access Token Secret, Consumer-key 
 	 * and Consumer-key secret with default values 
 	 */ 
-	
+
 	public void setKeys() { 
 
 		accessToken = new AccessToken("450529986-MRceSC7o2s5Ql6UtRjrD2QjKvkAMXrV5I1bbampV", "zLkRczDjc2jVPUj2KJa7euT37Ge9WjJgOK6ZcaidyKYsT");
@@ -256,7 +247,7 @@ public class TweetFetch extends Thread {
 		return result;
 
 	} 
-	
+
 	/**
 	 * This is the overloaded getQuery() function which accepts count of tweets 
 	 * the dates representing the starting time and ending time of tweets. 
@@ -282,14 +273,14 @@ public class TweetFetch extends Thread {
 
 		return result;
 	}
-	
+
 	/** 
 	 * Provided a list of Status objects as input the following method prints the various attributes of
 	 * the tweets like content, username, creation data, retweet count geolocation etc  
 	 * 
 	 * @param tweets List<Status> containing the set of tweets
 	 */ 
-	
+
 	public void printTweets(List<Status> tweets) { 
 
 		int c;
@@ -316,7 +307,7 @@ public class TweetFetch extends Thread {
 	 * Overloaded Function printTweets which accepts a QueryResult object as input and prints the same information
 	 * @param result QueryResult object containing the result of the executed query
 	 */ 
-	
+
 	public void printTweets(QueryResult result) {
 
 		List<Status> tweets = result.getTweets();
@@ -334,10 +325,10 @@ public class TweetFetch extends Thread {
 			System.out.println("Retweet Count : " + tweet.getRetweetCount());
 			System.out.println("Device Used for Tweet : " + tweet.getSource());
 			System.out.println("------------------------------------------------------");
-			
+
 			c++;
 		}
-		
+
 		System.out.println("The total number of tweets are : " + c);
 	}
 
@@ -345,11 +336,11 @@ public class TweetFetch extends Thread {
 	 * Log information regarding the query is displayed on the standard output
 	 * @param result QueryResult object containing the result obtained after executing the query
 	 */ 
-	
+
 	public void printSearchLog(QueryResult result)
 	{	
 		System.out.println("-------------------------------------------------------------"); 
-		
+
 		System.out.println("Maximum Id of the Tweet is : " + (result.getMaxId()));
 		System.out.println("Id for the start duration of the tweet : " + result.getSinceId());
 		System.out.println("The Rate Limit Status of the API : " + result.getRateLimitStatus());
@@ -358,17 +349,17 @@ public class TweetFetch extends Thread {
 		System.out.println("The time taken to execute the query : " + result.getCompletedIn());
 		System.out.println("The Access Level of the Search : " + result.getAccessLevel());
 		System.out.println("The Class to which the Query Object belongs to : " + result.getClass()); 
-		
+
 		System.out.println("-----------------------------------------------------------------");
 	}
- 
+
 	/** 
 	 * Utility function to write the tweets and related content to a flat file to further storage and processing
 	 * @param filename String containing the filename where the tweets have to be printed
 	 * @param result QueryResult object containing the result of the query execution
 	 * @throws IOException
 	 */ 
-	
+
 	public void writeTweetsToFile(String filename,QueryResult result) throws IOException
 	{
 		FileWriter fw;
@@ -389,6 +380,77 @@ public class TweetFetch extends Thread {
 
 		bw.close();
 		fw.close();
+	}
+
+	/** 
+	 * Loads a set of hashtags from a given file
+	 * @param filename String containing the filename
+	 * @return Set<String> containing the hashtag names
+	 * @throws IOException
+	 */ 
+
+	public Set<String> getFashionHashNames(String filename) throws IOException { 
+
+		BufferedReader br;
+		FileReader fr;
+		String prompt_alias;
+		String temp = "";
+		Set<String> tag_names = new HashSet<String>(); 
+
+		fr = new FileReader(filename);
+		br = new BufferedReader(fr); 
+
+		while((temp = br.readLine()) != null) { 
+
+			prompt_alias = temp.trim();
+			tag_names.add(prompt_alias);
+		}
+
+		br.close();
+		fr.close();
+
+		return tag_names;
+	} 
+
+	/** 
+	 * Defines the pipeline for populating the database with tweets associated a given hashtag
+	 * @param filename String containing the filename where the hashtags are
+	 * @param collection_name String containing the collection name
+	 * @throws IOException
+	 */ 
+
+	public void tweetPipelineForFashionTrends(String filename,String collection_name) throws IOException { 
+
+		Set<String> tag_names = getFashionHashNames(filename);
+
+		for (String tag : tag_names) { 
+
+			TweetFetch tweet = new TweetFetch(tag,collection_name);
+			tweet.start();
+		}
+	} 
+
+	/** 
+	 * Main function to test the utility of the class
+	 * @param args
+	 * @throws IOException
+	 * @throws TwitterException
+	 */ 
+
+	public static void main(String args[])throws IOException,TwitterException {
+		
+		TweetFetch t1 = new TweetFetch("@7fam", "SevenForAllMankind");
+		TweetFetch t2 = new TweetFetch("#7fam", "SevenForAllMankind");
+		TweetFetch t3 = new TweetFetch("7forallmankind :)", "SevenForAllMankind"); 
+		TweetFetch t4 = new TweetFetch("7forallmankind :(", "SevenForAllMankind"); 
+		
+		t1.start();
+		t2.start();
+		t3.start();
+		t4.start();  
+
+		TweetFetch tweet = new TweetFetch();
+		tweet.tweetPipelineForFashionTrends("twitter_fashion_list.txt", "Fashion");
 	}
 }
 

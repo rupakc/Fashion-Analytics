@@ -1,0 +1,15 @@
+forever21=Forever21
+mango=Mango
+levis=Levis
+zara=Zara
+h&m=HandM
+handm=HandM
+guess=Guess
+freepeople=FreePeople
+truereligion=TrueReligion
+rag&bone=RagandBone
+ragandbone=RagandBone
+7forallmankind=SevenForAllMankind
+sevenforallmankind=SevenForAllMankind
+fashion=Fashion
+giveaway=Giveaway
