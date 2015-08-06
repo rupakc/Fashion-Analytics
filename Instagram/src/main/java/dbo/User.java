@@ -20,6 +20,9 @@ public class User {
 	private long followed_by_count;
 	private long follows_count; 
 	
+	/** 
+	 * public constructor to initialize the user object with default values 
+	 */ 
 	
 	public User() { 
 		
@@ -35,8 +38,8 @@ public class User {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the username of a given user
+	 * @return String containing the username
 	 */ 
 	
 	public String getUsername() { 
@@ -45,8 +48,8 @@ public class User {
 	} 
 	
 	/** 
-	 * 
-	 * @param username
+	 * Sets the username of a given user
+	 * @param username String containing the username of a given user
 	 */ 
 	
 	public void setUsername(String username) { 
@@ -55,8 +58,8 @@ public class User {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the Id of a given user
+	 * @return String containing the user id
 	 */ 
 	
 	public String getId() { 
@@ -65,8 +68,8 @@ public class User {
 	} 
 	
 	/** 
-	 * 
-	 * @param id
+	 * Sets the Id of a given user
+	 * @param id String containing the user id
 	 */ 
 	
 	public void setId(String id) { 
@@ -75,8 +78,8 @@ public class User {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the bio description of a given user
+	 * @return String containing the short bio of the user
 	 */ 
 	
 	public String getBio() { 
@@ -85,8 +88,8 @@ public class User {
 	} 
 	
 	/** 
-	 * 
-	 * @param bio
+	 * Sets the bio of a given user
+	 * @param bio String containing the bio of a given user
 	 */ 
 	
 	public void setBio(String bio) { 
@@ -95,8 +98,8 @@ public class User {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the website of a given user
+	 * @return String containing the website
 	 */ 
 	
 	public String getWebsite() { 
@@ -105,8 +108,8 @@ public class User {
 	}  
 	
 	/** 
-	 * 
-	 * @param website
+	 * Sets the website of a given user
+	 * @param website String containing the website name
 	 */ 
 	
 	public void setWebsite(String website) { 
@@ -115,8 +118,8 @@ public class User {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the link to the profile picture of a given user
+	 * @return String containing the link to the profile picture
 	 */ 
 	
 	public String getProfilePicture() { 
@@ -125,8 +128,8 @@ public class User {
 	} 
 	
 	/** 
-	 * 
-	 * @param profile_picture
+	 * Sets the profile picture of a given user
+	 * @param profile_picture String containing the profile picture
 	 */ 
 	
 	public void setProfilePicture(String profile_picture) { 
@@ -135,8 +138,8 @@ public class User {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the full name of a given user
+	 * @return String containing the full name
 	 */ 
 	
 	public String getFullName() { 
@@ -145,8 +148,8 @@ public class User {
 	} 
 	
 	/** 
-	 * 
-	 * @param full_name
+	 * Sets the full name of a given user
+	 * @param full_name String containing the full name of the user
 	 */ 
 	
 	public void setFullName(String full_name) { 
@@ -155,8 +158,8 @@ public class User {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the count of the posts made by the user
+	 * @return Long number containing the post count
 	 */ 
 	
 	public long getMediaCount() { 
@@ -165,8 +168,8 @@ public class User {
 	} 
 	
 	/** 
-	 * 
-	 * @param media_count
+	 * Sets the number of posts made by the user
+	 * @param media_count Long number containing the media count 
 	 */ 
 	
 	public void setMediaCount(long media_count) { 
@@ -175,8 +178,8 @@ public class User {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the number of followers for a given user
+	 * @return Long number containing the follower count
 	 */ 
 	
 	public long getFollowedByCount() { 
@@ -185,8 +188,8 @@ public class User {
 	} 
 	
 	/** 
-	 * 
-	 * @param followed_by_count
+	 * Sets the followed by count for a given user
+	 * @param followed_by_count Long number containing the followed by count
 	 */
 	
 	public void setFollowedByCount(long followed_by_count) { 
@@ -195,8 +198,8 @@ public class User {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the count of people followed by the given user
+	 * @return Long number containing the follows count
 	 */ 
 	
 	public long getFollowsCount() { 
@@ -205,8 +208,8 @@ public class User {
 	} 
 	
 	/** 
-	 * 
-	 * @param follows_count
+	 * Sets the follows count for a given user
+	 * @param follows_count Long number containing the follows count
 	 */ 
 	
 	public void setFollowsCount(long follows_count) { 

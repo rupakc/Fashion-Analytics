@@ -31,9 +31,10 @@ public class Tag {
 	private String image_url;
 	private int image_height;
 	private int image_width;
+	private String country = "";
 	
 	/** 
-	 * 
+	 * public constructor to initialize the fields with default values
 	 */ 
 	
 	public Tag() { 
@@ -49,6 +50,7 @@ public class Tag {
 		tag_id = "";
 		filter = "";
 		type = "";
+		country = "";
 		tag_set = new HashSet<String>();
 		like_count = 0;
 		link = "";
@@ -57,10 +59,11 @@ public class Tag {
 		image_width = 0;
 		comment_count = 0;
 	} 
+	 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the image url of a given post
+	 * @return String containing the image url
 	 */ 
 	
 	public String getImageURL() { 
@@ -69,8 +72,8 @@ public class Tag {
 	}
 	
 	/** 
-	 * 
-	 * @param image_url
+	 * Sets the image url of a given post
+	 * @param image_url String containing the image url
 	 */ 
 	
 	public void setImageURL(String image_url) { 
@@ -79,8 +82,8 @@ public class Tag {
 	}
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the height of the image (only standard resolution)
+	 * @return Integer containing the height in pixels
 	 */ 
 	
 	public int getImageHeight() { 
@@ -89,8 +92,8 @@ public class Tag {
 	}
 	
 	/** 
-	 * 
-	 * @param image_height
+	 * Sets the height of a given image
+	 * @param image_height Integer containing the height of the image in pixels
 	 */ 
 	
 	public void setImageHeight(int image_height) { 
@@ -99,8 +102,8 @@ public class Tag {
 	}
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the width of the image (in standard resolution)
+	 * @return Integer containing the width in pixels
 	 */ 
 	
 	public int getImageWidth() { 
@@ -109,8 +112,8 @@ public class Tag {
 	}
 	
 	/** 
-	 * 
-	 * @param image_width
+	 * Sets the width of the given image
+	 * @param image_width Integer containing the image width
 	 */ 
 	
 	public void setImageWidth(int image_width) { 
@@ -119,8 +122,8 @@ public class Tag {
 	}
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the username of a given Instagram Tag
+	 * @return String containing the username
 	 */ 
 	
 	public String getUsername() { 
@@ -129,8 +132,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param username
+	 * Sets the username of a given Instagram Tag
+	 * @param username String containing the username of the tag/post
 	 */ 
 	
 	public void setUsername(String username) { 
@@ -139,8 +142,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the link to the profile picture of the post author
+	 * @return String containing the link to the profile picture
 	 */ 
 	
 	public String getProfilePicture() { 
@@ -149,8 +152,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param profile_picture
+	 * Sets the profile picture url of the given user
+	 * @param profile_picture String containing the url to the profile picture
 	 */ 
 	
 	public void setProfilePicture(String profile_picture) { 
@@ -159,8 +162,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the author of a given Instagram tag post
+	 * @return String containing the author name
 	 */ 
 	
 	public String getAuthor() { 
@@ -169,8 +172,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param full_name
+	 * Sets the author of a given Instagram post
+	 * @param full_name String containing the full name of the author
 	 */ 
 	
 	public void setAuthor(String full_name) { 
@@ -179,8 +182,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the userId of the given author
+	 * @return String containing the userId
 	 */ 
 	
 	public String getUserId() { 
@@ -189,8 +192,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param user_id
+	 * Sets the userId of the given author
+	 * @param user_id String containing the userId
 	 */ 
 	
 	public void setUserId(String user_id) { 
@@ -199,8 +202,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the timestamp of the given post
+	 * @return Double number containing the timestamp
 	 */ 
 	
 	public double getTimestamp() { 
@@ -209,8 +212,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param timestamp
+	 * Sets the timestamp of a given post
+	 * @param timestamp Double containing the timestamp
 	 */ 
 	
 	public void setTimestamp(double timestamp) { 
@@ -219,8 +222,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the tagId associated with a given post
+	 * @return String containing the tagId
 	 */ 
 	
 	public String getTagId() { 
@@ -229,8 +232,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param tag_id
+	 * Sets the tag_id for a given tag
+	 * @param tag_id String containing the tag id
 	 */ 
 	
 	public void setTagId(String tag_id) { 
@@ -239,8 +242,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the filter used for the given post
+	 * @return String containing the filter name
 	 */ 
 	
 	public String getFilter() { 
@@ -249,8 +252,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param filter
+	 * Sets the type of filter used on a photo
+	 * @param filter String containing the type of filter
 	 */ 
 	
 	public void setFilter(String filter) { 
@@ -259,8 +262,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the type of post (i.e. Photo or Video)
+	 * @return String containing the type of post 
 	 */ 
 	
 	public String getType() { 
@@ -269,8 +272,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param type
+	 * Sets the type of post (i.e. photo or video)
+	 * @param type String containing the type of post
 	 */ 
 	
 	public void setType(String type) { 
@@ -279,8 +282,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the caption text associated with a given post
+	 * @return String containing the caption text
 	 */ 
 	
 	public String getCaptionText() { 
@@ -289,8 +292,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param caption_text
+	 * Sets the caption text of a given post
+	 * @param caption_text String containing the caption text
 	 */ 
 	
 	public void setCaptionText(String caption_text) { 
@@ -299,8 +302,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the set of tags associated with a given Instagram post
+	 * @return Set<String> containing the tagset
 	 */ 
 	
 	public Set<String> getTagSet() { 
@@ -309,8 +312,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param tag_set
+	 * Sets the Tagset of a given Instagram post
+	 * @param tag_set Set<String> containing the tagset
 	 */ 
 	
 	public void setTagSet(Set<String> tag_set) { 
@@ -319,8 +322,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the number of likes received by a given tag post
+	 * @return Integer containing the number of likes
 	 */ 
 	
 	public int getLikeCount() { 
@@ -329,8 +332,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param like_count
+	 * Sets the number of likes of a given tag post
+	 * @param like_count Integer containing the number of likes
 	 */ 
 	
 	public void setLikeCount(int like_count) { 
@@ -339,8 +342,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the url of the given tag post
+	 * @return String containing the link
 	 */ 
 	
 	public String getLink() { 
@@ -349,8 +352,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param link
+	 * Sets the url of a given tag
+	 * @param link String containing the link to the post
 	 */ 
 	
 	public void setLink(String link) { 
@@ -359,8 +362,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the latitude of a given post
+	 * @return Double containing the latitude
 	 */ 
 	
 	public double getLatitude() { 
@@ -369,8 +372,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param latitude
+	 * Sets the latitude of a given place
+	 * @param latitude Double containing the latitude
 	 */ 
 	
 	public void setLatitude(double latitude) { 
@@ -379,8 +382,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the longitude of a given place
+	 * @return Double representing the longitude of a place
 	 */ 
 	
 	public double getLongitude() { 
@@ -389,8 +392,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @param longitude
+	 * Sets the longitude of a given post
+	 * @param longitude Floating point number containing longitude of a place
 	 */ 
 	
 	public void setLongitude(double longitude) { 
@@ -399,8 +402,8 @@ public class Tag {
 	} 
 	
 	/** 
-	 * 
-	 * @return
+	 * Returns the count of comments on a given post
+	 * @return Integer containing the number of comments
 	 */ 
 	
 	public int getCommentCount() { 
@@ -410,12 +413,32 @@ public class Tag {
 	
 	
 	/** 
-	 * 
-	 * @param comment_count
+	 * Sets the number of comments received on a given post
+	 * @param comment_count Integer containing the number of comments
 	 */ 
 	
 	public void setCommentCount(int comment_count) { 
 		
 		this.comment_count = comment_count;
+	}
+	
+	/** 
+	 * Returns the country name associated with the given post
+	 * @return String containing the country name
+	 */ 
+	
+	public String getCountry() { 
+		
+		return country;
+	}
+	
+	/** 
+	 * Sets the country name of the given post
+	 * @param country String containing the country name
+	 */
+	
+	public void setCountry(String country) { 
+		
+		this.country = country;
 	}
 }

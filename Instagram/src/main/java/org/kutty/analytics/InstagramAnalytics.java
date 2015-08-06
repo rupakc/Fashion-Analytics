@@ -21,6 +21,15 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
+/** 
+ * Performs basic analytics on the Instagram tags and associated content stored in the db
+ * @author Rupak Chakraborty
+ * @for Kutty 
+ * @since 18 July, 2015 
+ *  
+ *  TODO - Add latitude,longitude and user analytics
+ */ 
+
 public class InstagramAnalytics {
 
 	public static String product_name;
